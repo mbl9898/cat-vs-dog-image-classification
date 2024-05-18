@@ -1,16 +1,3 @@
-$("#image-selector").change(function () {
-  let reader = new FileReader();
-  reader.onload = function () {
-    let dataURL = reader.result;
-    $("#selected-image").attr("src", dataURL);
-    $("#prediction-list").empty();
-  };
-
-  let file = $("#image-selector").prop("files")[0];
-  reader.readAsDataURL(file);
-});
-
-let model;
 $(document).ready(async function () {
   $(".progress-bar").show();
   console.log("Loading model...");
@@ -19,35 +6,54 @@ $(document).ready(async function () {
   $(".progress-bar").hide();
 });
 
+$("#image-selector").change(function () {
+  $("#image-prediction-container").empty(); // Clear previous images and predictions
+
+  let files = $("#image-selector").prop("files");
+  Array.from(files).forEach((file) => {
+    let reader = new FileReader();
+    reader.onload = function () {
+      let dataURL = reader.result;
+
+      let imgElement = $(`<div class="col-4">
+                                    <img src="${dataURL}" class="selected-image" width="250" alt="">
+                                    <ol class="prediction-list"></ol>
+                                </div>`);
+      $("#image-prediction-container").append(imgElement);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
 $("#predict-button").click(async function () {
-  let image = $("#selected-image").get(0);
+  $(".selected-image").each(async function () {
+    let image = $(this).get(0);
 
-  // Pre-process the image
-  let tensor = tf.browser
-    .fromPixels(image)
-    .resizeNearestNeighbor([96, 96]) // change the image size here
-    .toFloat()
-    .div(tf.scalar(255.0))
-    .expandDims();
+    // Pre-process the image
+    let tensor = tf.browser
+      .fromPixels(image)
+      .resizeNearestNeighbor([96, 96]) // Change the image size here
+      .toFloat()
+      .div(tf.scalar(255.0))
+      .expandDims();
 
-  let predictions = await model.predict(tensor).data();
-  let top5 = Array.from(predictions)
-    .map(function (p, i) {
-      // this is Array.map
-      return {
-        probability: p,
-        className: TARGET_CLASSES[i], // we are selecting the value from the obj
-      };
-    })
-    .sort(function (a, b) {
-      return b.probability - a.probability;
-    })
-    .slice(0, 2);
+    let predictions = await model.predict(tensor).data();
+    let top5 = Array.from(predictions)
+      .map((p, i) => {
+        return {
+          probability: p,
+          className: TARGET_CLASSES[i], // We are selecting the value from the obj
+        };
+      })
+      .sort((a, b) => b.probability - a.probability)
+      .slice(0, 2);
 
-  $("#prediction-list").empty();
-  top5.forEach(function (p) {
-    $("#prediction-list").append(
-      `<li>${p.className}: ${p.probability.toFixed(6)}</li>`
-    );
+    let predictionList = $(this).next(".prediction-list");
+    predictionList.empty();
+    top5.forEach((p) => {
+      predictionList.append(
+        `<li>${p.className}: ${p.probability.toFixed(6)}</li>`
+      );
+    });
   });
 });
