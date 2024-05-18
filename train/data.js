@@ -6,18 +6,18 @@ const TRAIN_IMAGES_DIR = "./data/train";
 const TEST_IMAGES_DIR = "./data/test";
 
 function loadImages(dataDir) {
-  console.log({ dataDir });
+  // console.log({ dataDir });
   const images = [];
   const labels = [];
 
   var files = fs.readdirSync(dataDir);
   for (let i = 0; i < files.length; i++) {
-    if (!files[i].toLocaleLowerCase().endsWith(".png")) {
+    if (!files[i].toLocaleLowerCase().endsWith(".jpg")) {
       continue;
     }
 
     var filePath = path.join(dataDir, files[i]);
-    console.log({ filePath });
+    // console.log({ filePath });
 
     var buffer = fs.readFileSync(filePath);
     // console.log({ buffer });
@@ -29,15 +29,15 @@ function loadImages(dataDir) {
       .expandDims();
     images.push(imageTensor);
 
-    var hasTuberculosis = files[i].toLocaleLowerCase().endsWith("_1.png");
-    labels.push(hasTuberculosis ? 1 : 0);
+    var isDog = files[i].toLocaleLowerCase().endsWith("_1.jpg");
+    labels.push(isDog ? 1 : 0);
   }
 
   return [images, labels];
 }
 
 /** Helper class to handle loading training and test data. */
-class TuberculosisDataset {
+class CatVSDogDataset {
   constructor() {
     this.trainData = [];
     this.testData = [];
@@ -52,7 +52,7 @@ class TuberculosisDataset {
   }
 
   getTrainData() {
-    console.log("this.trainData[0]", this?.trainData?.[0]);
+    // console.log("this.trainData[0]", this?.trainData?.[0]);
     return {
       images: tf.concat(this.trainData[0]),
       labels: tf.oneHot(tf.tensor1d(this.trainData[1], "int32"), 2).toFloat(),
@@ -67,4 +67,4 @@ class TuberculosisDataset {
   }
 }
 
-module.exports = new TuberculosisDataset();
+module.exports = new CatVSDogDataset();

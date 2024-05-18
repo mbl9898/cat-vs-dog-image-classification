@@ -4,12 +4,12 @@ const data = require("./data");
 const model = require("./model");
 
 async function run(epochs, batchSize, modelSavePath) {
-  console.log([epochs, batchSize, modelSavePath]);
+  // console.log([epochs, batchSize, modelSavePath]);
   data.loadData();
 
   const { images: trainImages, labels: trainLabels } = data.getTrainData();
-  console.log("Training Images (Shape): " + trainImages.shape);
-  console.log("Training Labels (Shape): " + trainLabels.shape);
+  // console.log("Training Images (Shape): " + trainImages.shape);
+  // console.log("Training Labels (Shape): " + trainLabels.shape);
 
   model.summary();
 
@@ -35,4 +35,4 @@ async function run(epochs, batchSize, modelSavePath) {
   }
 }
 
-run(10, 32, "./model");
+run(100, 32, "./model");
