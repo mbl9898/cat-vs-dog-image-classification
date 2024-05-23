@@ -1,0 +1,13 @@
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+.selected-image {
+  margin: 10px 0;
+}
+
+.prediction-list {
+  list-style-type: none;
+  padding: 0;
+}
