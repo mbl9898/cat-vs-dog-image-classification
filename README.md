@@ -6,7 +6,7 @@
 
 This example shows you how to train Cat-vs-Dog image classification model (using the layers API) under Node.js.
 
-The [Cat-vs-Dog image classification model](https://www.kaggle.com/datasets/salader/dogs-vs-cats) used in this example, are from the Kaggle website and are not published with this repository.
+The [Cat-vs-Dog image dataset](https://www.kaggle.com/datasets/salader/dogs-vs-cats) used in this example, are from the Kaggle website and are not published with this repository.
 
 Prepare the node environments:
 
